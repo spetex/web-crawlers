@@ -30,7 +30,7 @@ class GoOutSpider < Kimurai::Base
       }
       found = loaded.detect { |item| item["link"] == event[:link] }
       event[:scrapeDate] = found["scrapeDate"] if found
-      count += 1 unless found
+      countUpdated += 1 unless found
       save_to FILE_NAME, event, format: :pretty_json
     end
     puts "Update #{countUpdated} items."
