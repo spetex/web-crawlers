@@ -26,5 +26,3 @@ get '/goout.rss', :provides => ['rss', 'atom', 'xml'] do
   rss = produceRSS events
   "#{rss}"
 end
-
-
