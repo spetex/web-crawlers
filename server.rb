@@ -14,6 +14,7 @@ def produceRSS(events)
         item.link = event["link"]
         item.title = event["name"]
         item.updated = event["scrapeDate"]
+        item.description = "#{event["dateTime"]} - #{event["venue"]}"
       end
     end
   end
