@@ -20,9 +20,11 @@ def produceRSS(events)
   end
 end
 
-get '/goout.rss', :provides => ['rss', 'atom', 'xml'] do
-  file = File.open "data/goout_newly_announced.json"
-  events = JSON.load file
-  rss = produceRSS events
-  "#{rss}"
+class RssProviderApp < Sinatra::Base
+  get '/goout.rss', :provides => ['rss', 'atom', 'xml'] do
+    file = File.open "data/goout_newly_announced.json"
+    events = JSON.load file
+    rss = produceRSS events
+    rss.to_s
+  end
 end
