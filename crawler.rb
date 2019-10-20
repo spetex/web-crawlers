@@ -3,8 +3,10 @@
 require 'kimurai'
 require 'json'
 
+CRAWLER_DATA_DIR = "/tmp/crawler-data"
 LINK_DOMAIN = "https://goout.net"
-FILE_NAME = "data/goout_newly_announced.json"
+FILE_NAME = "goout_newly_announced.json"
+FULL_PATH = "#{CRAWLER_DATA_DIR}/#{FILE_NAME}"
 
 
 class GoOutSpider < Kimurai::Base
@@ -13,9 +15,11 @@ class GoOutSpider < Kimurai::Base
   @start_urls = ["https://goout.net/cs/praha/akce/?sort=newly_announced"]
 
   def parse(response, url:, data: {})
-    file = File.open FILE_NAME
-    loaded = JSON.load file
-    file.close
+    if File.file?(FULL_PATH) then
+      file = File.open FULL_PATH
+      loaded = JSON.load file
+      file.close
+    end
 
     countUpdated = 0
 
@@ -28,10 +32,14 @@ class GoOutSpider < Kimurai::Base
         :dateTime => card.css('time').attribute('datetime'),
         :scrapeDate => Time.now.to_s,
       }
-      found = loaded.detect { |item| item["link"] == event[:link] }
-      event[:scrapeDate] = found["scrapeDate"] if found
+      if loaded then
+        found = loaded.detect { |item| item["link"] == event[:link] }
+        event[:scrapeDate] = found["scrapeDate"] if found
+      end
       countUpdated += 1 unless found
-      save_to FILE_NAME, event, format: :pretty_json
+
+      Dir.mkdir(CRAWLER_DATA_DIR) unless Dir.exists? CRAWLER_DATA_DIR
+      save_to FULL_PATH, event, format: :pretty_json
     end
     puts "Update #{countUpdated} items."
   end
