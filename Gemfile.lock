@@ -72,6 +72,9 @@ GEM
     nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
     ntlm-http (0.1.1)
+    passenger (6.0.4)
+      rack
+      rake (>= 0.8.1)
     pmap (1.1.1)
     poltergeist (1.18.1)
       capybara (>= 2.1, < 4)
@@ -86,6 +89,7 @@ GEM
       rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
+    rake (12.3.2)
     rbcat (0.2.1)
     regexp_parser (1.6.0)
     rubyzip (2.0.0)
@@ -120,6 +124,7 @@ PLATFORMS
 
 DEPENDENCIES
   kimurai
+  passenger
   sinatra
 
 BUNDLED WITH
