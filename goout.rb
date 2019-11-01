@@ -3,7 +3,7 @@
 require 'kimurai'
 require 'json'
 
-CRAWLER_DATA_DIR = "/tmp/crawler-data"
+CRAWLER_DATA_DIR = ENV['CRAWLERS_DATA_DIR']
 LINK_DOMAIN = "https://goout.net"
 FILE_NAME = "goout_newly_announced.json"
 FULL_PATH = "#{CRAWLER_DATA_DIR}/#{FILE_NAME}"
