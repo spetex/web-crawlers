@@ -17,29 +17,29 @@ class GoOutSpider < Kimurai::Base
   def parse(response, url:, data: {})
     if File.file?(FULL_PATH) then
       file = File.open FULL_PATH
-      loaded = JSON.load file
+      loaded = JSON.load(file).map {|record| OpenStruct.new(record)}
       file.close
     end
 
     countUpdated = 0
 
     response.css('.eventCard .info').each do |card|
-      event = {
+      event = OpenStruct.new({
         :name => card.css('span[itemprop=name].name').text.squish,
         :link => "#{LINK_DOMAIN}#{card.css('a').attribute('href')}",
         :venue => card.css('.venue span[itemprop=name]').text.squish,
         :venueLink => "#{LINK_DOMAIN}#{card.css('.venue span[itemprop=geo]').attribute('data-venue-href')}",
         :dateTime => card.css('time').attribute('datetime'),
         :scrapeDate => Time.now.to_s,
-      }
+      })
       if loaded then
-        found = loaded.detect { |item| item["link"] == event[:link] }
-        event[:scrapeDate] = found["scrapeDate"] if found
+        found = loaded.detect { |item| item.link == event.link }
+        event.scrapeDate = found.scrapeDate if found
       end
       countUpdated += 1 unless found
 
       Dir.mkdir(CRAWLER_DATA_DIR) unless Dir.exists? CRAWLER_DATA_DIR
-      save_to FULL_PATH, event, format: :pretty_json
+      save_to FULL_PATH, event.to_h(), format: :pretty_json
     end
     puts "Update #{countUpdated} items."
   end
