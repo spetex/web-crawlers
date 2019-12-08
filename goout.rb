@@ -6,12 +6,29 @@ require 'json'
 CRAWLER_DATA_DIR = ENV['CRAWLERS_DATA_DIR']
 LINK_DOMAIN = 'https://goout.net'.freeze
 FILE_NAME = 'goout_newly_announced.json'.freeze
-FULL_PATH = "#{CRAWLER_DATA_DIR}/#{FILE_NAME}".freeze
+SORT_METHOD = 'sort=newly_announced'.freeze
 
 class GoOutSpider < Kimurai::Base
   @name = 'GoOut_Spider'
   @engine = :mechanize
-  @start_urls = ['https://goout.net/cs/praha/akce/?sort=newly_announced']
+  @categories = %w[
+    events
+    concerts
+    plays
+    exhibitions
+    movies
+    parties
+    festivals
+    culinary
+    for-children
+    other-events
+  ]
+  @start_urls = @categories.map do |category|
+    {
+      url: "#{LINK_DOMAIN}/en/prague/#{category}/?#{SORT_METHOD}",
+      data: "#{CRAWLER_DATA_DIR}/#{category}_#{FILE_NAME}"
+    }
+  end
 
   def create_card(card)
     OpenStruct.new(
@@ -25,10 +42,10 @@ class GoOutSpider < Kimurai::Base
     )
   end
 
-  def load_data
-    return unless File.file?(FULL_PATH)
+  def load_data(data_path)
+    return unless File.file?(data_path)
 
-    file = File.read FULL_PATH
+    file = File.read data_path
     JSON.parse(file).map { |record| OpenStruct.new(record) }
   end
 
@@ -36,8 +53,8 @@ class GoOutSpider < Kimurai::Base
     Dir.mkdir(CRAWLER_DATA_DIR) unless Dir.exist? CRAWLER_DATA_DIR
   end
 
-  def parse(response, _url)
-    loaded = load_data
+  def parse(response, url)
+    loaded = load_data url[:data]
     count_updated = 0
 
     response.css('.eventCard .info').each do |card|
@@ -48,7 +65,7 @@ class GoOutSpider < Kimurai::Base
       end
       count_updated += 1 unless found
       ensure_data_dir
-      save_to FULL_PATH, event.to_h, format: :pretty_json
+      save_to url[:data], event.to_h, format: :pretty_json
     end
     puts "Update #{count_updated} items."
   end
