@@ -7,6 +7,7 @@ env 'RUBY_VERSION', ENV['RUBY_VERSION']
 
 every 30.minutes do
   command 'exec rvm $RUBY_VERSION@$CRAWLERS_ENV do ruby $CRAWLERS/goout.rb >> $CRAWLERS_LOG_FILE'
+  command 'exec rvm $RUBY_VERSION@$CRAWLERS_ENV do ruby $CRAWLERS/puttyandpaint.rb >> $CRAWLERS_LOG_FILE'
 end
 
 # Learn more: http://github.com/javan/whenever
