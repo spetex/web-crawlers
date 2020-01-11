@@ -9,6 +9,7 @@ every 30.minutes do
   command 'exec rvm $RUBY_VERSION@$CRAWLERS_ENV do ruby $CRAWLERS/goout.rb >> $CRAWLERS_LOG_FILE'
   command 'exec rvm $RUBY_VERSION@$CRAWLERS_ENV do ruby $CRAWLERS/puttyandpaint.rb >> $CRAWLERS_LOG_FILE'
   command 'exec rvm $RUBY_VERSION@$CRAWLERS_ENV do ruby $CRAWLERS/whcommunity.rb >> $CRAWLERS_LOG_FILE'
+  command 'exec rvm $RUBY_VERSION@$CRAWLERS_ENV do ruby $CRAWLERS/coolminiornot.rb >> $CRAWLERS_LOG_FILE'
 end
 
 # Learn more: http://github.com/javan/whenever
