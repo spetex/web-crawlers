@@ -12,10 +12,15 @@ class GoOutSpider < Kimurai::Base
   @engine = :mechanize
   @categories = %w[
     warhammer-40000-news
+    warhammer-40000
     warhammer-age-of-sigmar-news
+    warhammer-age-of-sigmar
     black-library-news
+    black-library
     horus-heresy-news
+    horus-heresy
     forge-world-news
+    forge-world
     store-news
   ]
   @start_urls = @categories.map do |category|
